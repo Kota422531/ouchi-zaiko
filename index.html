@@ -1119,6 +1119,159 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important;
 .shop-card > .item-main::before { left: -22px; border-radius: 0 9px 9px 0; }
 .shop-card > .item-main::after { right: -16px; border-radius: 9px 0 0 9px; }
 
+/* ---------- v3: 開封品（在庫カード） ---------- */
+.item-open {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  margin-top: -2px;
+}
+@media (min-width: 600px) {
+  .item-card > .item-open { grid-column: 1 / -1; }
+}
+.item-open[data-opened="true"] {
+  padding: 10px 12px 12px;
+  border-radius: 14px;
+  background: var(--surface-2);
+}
+.item-open-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  min-width: 0;
+}
+.open-summary {
+  min-width: 0;
+  color: var(--text);
+  font-size: 13.5px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.open-summary--sealed { color: var(--text-muted); font-size: 12.5px; font-weight: 500; }
+.btn-open {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex: none;
+  min-height: var(--tap);
+  padding: 6px 14px 6px 12px;
+  border: 2px solid var(--gold-deep);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 13.5px;
+  font-weight: 700;
+  line-height: 1.2;
+  transition: transform 120ms var(--bounce), background-color var(--dur) ease;
+}
+.btn-open::before {                     /* ふたが開いた瓶 */
+  content: "";
+  flex: none;
+  width: 12px;
+  height: 14px;
+  border-radius: 2px 2px 4px 4px;
+  background:
+    linear-gradient(var(--gold-deep), var(--gold-deep)) 50% 0 / 8px 3px no-repeat,
+    linear-gradient(to top, var(--gold) 0 60%, transparent 60%) 0 100% / 100% 80% no-repeat;
+  box-shadow: inset 0 0 0 1.5px var(--gold-deep);
+  transform: rotate(-8deg);
+}
+.btn-open:active { transform: scale(0.96); }
+@media (hover: hover) {
+  .btn-open:hover { background: var(--low-bg); }
+}
+
+.open-gauge { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.level-meter {
+  flex: none;
+  display: inline-grid;
+  grid-template-columns: repeat(4, 9px);
+  gap: 2px;
+  padding: 2px;
+  border: 1.5px solid var(--border-strong);
+  border-radius: 6px;
+  background: var(--surface);
+}
+.level-meter-seg { height: 10px; border-radius: 2px; background: transparent; }
+.level-meter[data-level="full"] .level-meter-seg { background: var(--ok); }
+.level-meter[data-level="half"] .level-meter-seg:nth-child(-n+2) { background: var(--ok); }
+.level-meter[data-level="low"] .level-meter-seg:nth-child(1) { background: var(--low); }
+.level-meter[data-level="empty"] { border-style: dashed; border-color: var(--out); }
+.level-text { min-width: 0; color: var(--text-muted); font-size: 12.5px; font-weight: 700; overflow-wrap: anywhere; }
+.item-card[data-status="low"] .level-meter[data-level="low"] + .level-text,
+.item-card[data-status="low"] .level-meter[data-level="empty"] + .level-text { color: var(--low); }
+
+.level-chips {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  min-width: 0;
+}
+.level-chip {
+  min-width: 0;
+  min-height: var(--tap);
+  padding: 4px 2px;
+  border: 2px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+  transition: transform 120ms var(--bounce), background-color var(--dur) ease, border-color var(--dur) ease;
+}
+.level-chip[aria-pressed="true"] {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--primary-contrast);
+  box-shadow: 0 2px 0 var(--primary-shadow);
+}
+.level-chip[aria-pressed="true"][data-level="low"],
+.level-chip[aria-pressed="true"][data-level="empty"] {
+  border-color: var(--low);
+  background: var(--low-bg);
+  color: var(--low);
+  box-shadow: none;
+}
+.level-chip:active { transform: scale(0.95); }
+@media (hover: hover) {
+  .level-chip[aria-pressed="false"]:hover { border-color: var(--border-strong); }
+}
+
+/* 買い物カードの理由 */
+.shop-reason {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  max-width: 100%;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.shop-reason::before {
+  content: "";
+  flex: none;
+  width: 10px;
+  height: 10px;
+  background: var(--pink);
+  clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%);
+}
+.shop-reason[data-reason="out"]::before { background: var(--out); }
+.shop-reason[data-reason="opened_low"]::before { background: var(--gold-deep); }
+
+/* 登録・編集フォームの開封欄 */
+.field-help--opened { margin-top: -8px; }
+
 /* ---------- 登録シート ---------- */
 .sheet {
   position: relative;
@@ -1552,6 +1705,115 @@ body.web-gate-open { padding-bottom: calc(28px + env(safe-area-inset-bottom, 0px
 }
 .web-pass-btn:focus-visible { outline-color: var(--gold-light); }
 
+/* ---------- v3: 通知（ntfy）設定 ---------- */
+.web-notify-panel { display: flex; flex-direction: column; gap: 14px; }
+.web-notify-panel > .modal-title + * { margin-top: 0; }
+.web-notify-lead { font-size: 14.5px; line-height: 1.7; }
+
+.web-notify-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 12px 14px;
+  list-style: none;
+  border: 2px dashed var(--perf);
+  border-radius: 14px;
+  background: var(--surface-2);
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+.web-notify-steps li { display: flex; align-items: flex-start; gap: 10px; min-width: 0; overflow-wrap: anywhere; }
+.web-notify-step-num {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  margin-top: 1px;
+  border-radius: 50%;
+  background: var(--gold);
+  color: var(--gold-ink);
+  font-family: var(--font-display);
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+/* トピック名（38文字）を全部見せる: 入力欄は 1 行全幅、コピーはその下 */
+.web-notify-topic-row { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; min-width: 0; }
+.web-notify-topic {
+  flex: 1 1 100%;
+  padding-inline: 10px;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 14px;
+  letter-spacing: 0;
+  text-align: center;
+  background: var(--surface-2);
+}
+.web-notify-copy { flex: 1 1 100%; min-height: var(--tap); box-shadow: none; margin-bottom: 0; }
+.web-notify-link { display: block; color: var(--primary); font-weight: 700; word-break: break-all; }
+
+.web-notify-switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: var(--tap);
+  padding: 10px 14px;
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+}
+.web-notify-switch-label { display: flex; flex-direction: column; gap: 2px; min-width: 0; cursor: pointer; }
+.web-notify-switch-title { font-family: var(--font-display); font-size: 15px; font-weight: 700; }
+.web-notify-switch-help { color: var(--text-muted); font-size: 12.5px; line-height: 1.5; }
+.web-notify-switch {
+  flex: none;
+  position: relative;
+  width: 56px;
+  height: 32px;
+  margin: 0;
+  border: 2px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--surface-2);
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  transition: background-color var(--dur) ease, border-color var(--dur) ease;
+}
+.web-notify-switch::before {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  transition: transform var(--dur) var(--bounce), background-color var(--dur) ease;
+}
+.web-notify-switch:checked { background: var(--primary); border-color: var(--primary); }
+.web-notify-switch:checked::before { transform: translateX(24px); background: var(--primary-contrast); }
+/* タップ領域を 44px 以上に */
+.web-notify-switch::after { content: ""; position: absolute; inset: -8px -4px; }
+
+.web-notify-caution {
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--low-bg);
+  color: var(--text);
+  font-size: 12.5px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.web-notify-panel .modal-actions { margin-top: 2px; }
+@media (min-width: 600px) {
+  .web-notify-topic-row { flex-wrap: nowrap; }
+  .web-notify-topic { flex: 1 1 auto; }
+  .web-notify-copy { flex: none; padding-inline: 18px; }
+}
+
 </style>
 </head>
 <body>
@@ -1673,6 +1935,45 @@ body.web-gate-open { padding-bottom: calc(28px + env(safe-area-inset-bottom, 0px
     <div class="modal-actions">
       <button type="button" id="web-pass-cancel" class="btn-secondary" data-web-close>キャンセル</button>
       <button type="button" id="web-pass-confirm" class="btn-primary">入力画面に戻る</button>
+    </div>
+  </div>
+</div>
+
+<!-- Web版 v3: 買い物リストの通知（ntfy）設定 -->
+<div class="modal" id="web-notify-modal" role="dialog" aria-modal="true" aria-labelledby="web-notify-modal-title" hidden>
+  <div class="modal-backdrop" data-web-close></div>
+  <div class="modal-panel web-notify-panel">
+    <h2 id="web-notify-modal-title" class="modal-title">買い物リストの通知</h2>
+    <p class="modal-body web-notify-lead">買い物リストに品目が入ったら、無料の通知アプリ「ntfy」でふたりのスマホにお知らせします。</p>
+
+    <ol class="web-notify-steps">
+      <li><span class="web-notify-step-num" aria-hidden="true">1</span><span>スマホに <strong>ntfy</strong> アプリを入れる（App Store / Google Play で「ntfy」と検索）</span></li>
+      <li><span class="web-notify-step-num" aria-hidden="true">2</span><span>アプリの「＋」をタップし、下のトピック名を貼り付けて購読（サーバーは <strong>ntfy.sh</strong> のまま）</span></li>
+      <li><span class="web-notify-step-num" aria-hidden="true">3</span><span>ふたりとも同じトピックを購読すれば完了です</span></li>
+    </ol>
+
+    <div class="field">
+      <label for="web-notify-topic" class="label">トピック名</label>
+      <div class="web-notify-topic-row">
+        <input id="web-notify-topic" type="text" class="input web-notify-topic" readonly autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="web-notify-topic-help">
+        <button type="button" id="web-notify-copy" class="btn-secondary web-notify-copy">トピック名をコピー</button>
+      </div>
+      <p id="web-notify-topic-help" class="field-help">合言葉から作った名前です。ブラウザで購読する場合はこちら:<a id="web-notify-link" class="web-notify-link" target="_blank" rel="noopener noreferrer"></a></p>
+    </div>
+
+    <div class="web-notify-switch-row">
+      <label for="web-notify-enabled" class="web-notify-switch-label">
+        <span class="web-notify-switch-title">この端末から通知を送る</span>
+        <span class="web-notify-switch-help">オフにすると、この端末で操作したときは通知を送りません</span>
+      </label>
+      <input id="web-notify-enabled" type="checkbox" class="web-notify-switch" role="switch" checked>
+    </div>
+
+    <p class="web-notify-caution">通知の内容（品名）は ntfy.sh のサーバーを経由して届きます。トピック名を知っている人は通知を読めるので、他の人には教えないでください。</p>
+
+    <div class="modal-actions">
+      <button type="button" id="web-notify-test" class="btn-secondary">テスト通知を送る</button>
+      <button type="button" id="web-notify-close" class="btn-primary" data-web-close>閉じる</button>
     </div>
   </div>
 </div>
@@ -1873,6 +2174,25 @@ body.web-gate-open { padding-bottom: calc(28px + env(safe-area-inset-bottom, 0px
           <p id="error-min-quantity" class="field-error" hidden></p>
         </div>
 
+        <div class="field-row field-row--2 field-row--opened">
+          <div class="field">
+            <label for="input-opened" class="label">開封済みの数</label>
+            <input id="input-opened" name="opened" type="number" class="input input--num" min="0" step="any" inputmode="decimal" value="0" aria-describedby="help-opened error-opened">
+            <p id="error-opened" class="field-error" hidden></p>
+          </div>
+          <div class="field">
+            <label for="input-opened-level" class="label">開封品の残量</label>
+            <select id="input-opened-level" name="openedLevel" class="select" aria-describedby="help-opened error-opened-level">
+              <option value="full" selected>たっぷり</option>
+              <option value="half">半分</option>
+              <option value="low">少なめ</option>
+              <option value="empty">ほぼ空</option>
+            </select>
+            <p id="error-opened-level" class="field-error" hidden></p>
+          </div>
+        </div>
+        <p id="help-opened" class="field-help field-help--opened">数量のうち開封済みの数です。開封品が「少なめ」「ほぼ空」で未開封の予備が無いと、買い物リストに入ります</p>
+
         <div class="field">
           <label for="input-location" class="label">保管場所</label>
           <input id="input-location" name="location" type="text" class="input" maxlength="30" list="location-options" autocomplete="off" placeholder="例：冷蔵庫、パントリー上段" aria-describedby="error-location">
@@ -1953,6 +2273,25 @@ body.web-gate-open { padding-bottom: calc(28px + env(safe-area-inset-bottom, 0px
         <p id="help-edit-min-quantity" class="field-help">数量がこの数より少なくなると買い物リストに入ります（在庫切れは常に入ります）</p>
         <p id="error-edit-min-quantity" class="field-error" hidden></p>
       </div>
+
+      <div class="field-row field-row--2 field-row--opened">
+        <div class="field">
+          <label for="edit-opened" class="label">開封済みの数</label>
+          <input id="edit-opened" name="opened" type="number" class="input input--num" min="0" step="any" inputmode="decimal" aria-describedby="help-edit-opened error-edit-opened">
+          <p id="error-edit-opened" class="field-error" hidden></p>
+        </div>
+        <div class="field">
+          <label for="edit-opened-level" class="label">開封品の残量</label>
+          <select id="edit-opened-level" name="openedLevel" class="select" aria-describedby="help-edit-opened error-edit-opened-level">
+            <option value="full" selected>たっぷり</option>
+            <option value="half">半分</option>
+            <option value="low">少なめ</option>
+            <option value="empty">ほぼ空</option>
+          </select>
+          <p id="error-edit-opened-level" class="field-error" hidden></p>
+        </div>
+      </div>
+      <p id="help-edit-opened" class="field-help field-help--opened">数量のうち開封済みの数です。開封品が「少なめ」「ほぼ空」で未開封の予備が無いと、買い物リストに入ります</p>
 
       <div class="field">
         <label for="edit-location" class="label">保管場所</label>
@@ -2367,6 +2706,311 @@ window.FIREBASE_CONFIG = window.FIREBASE_CONFIG || {
 
 </script>
 <script>
+/*
+ * notify.js — Web版専用: 買い物リストに入ったら ntfy（https://ntfy.sh）でスマホに通知する（window.StockNotify）
+ *
+ * - トピック名 = "ouchi-" + sha256hex("ntfy-topic-v1:" + hid).slice(0, 32)
+ *   同じ合言葉 → 同じ hid → 同じトピック。ふたりとも ntfy アプリで同じトピックを購読する
+ * - 送信は JSON 方式（POST https://ntfy.sh/ に {topic, title, message, tags, click}）。
+ *   Content-Type を付けない（text/plain 扱い）ので CORS のプリフライトにならない
+ * - app.js が「この端末の書き込みで 対象外→対象 になった」ときだけ StockNotify.notify(item, reason) を呼ぶ
+ * - 失敗しても在庫操作には影響させない（console.warn のみ。2 回連続で失敗したらトーストで 1 回だけ知らせる）
+ * - 「この端末から通知を送る」ON/OFF は localStorage（既定 ON）
+ * - 設定 UI: ヘッダーの「通知」ボタン → #web-notify-modal（gate.html）
+ * Artifact版には含まれない（build.py が Web版にだけ入れる）。DOM への文字列は textContent / value / setAttribute のみ。
+ */
+(function () {
+  "use strict";
+
+  var root = typeof window !== "undefined" ? window : globalThis;
+
+  var NTFY_URL = "https://ntfy.sh/";
+  var TOPIC_SALT = "ntfy-topic-v1:";
+  var TOPIC_PREFIX = "ouchi-";
+  var ENABLED_KEY = "ouchi.web.notify.enabled.v1";
+  var FAIL_TOAST_AFTER = 2;
+  var TIMEOUT_MS = 10000;
+
+  var topicPromise = null;
+  var topic = "";
+  var failStreak = 0;
+  var failToastShown = false;
+  var toastTimer = null;
+  var modalReturnFocus = null;
+  var uiWired = false;
+
+  /* ---------------- トピック ---------------- */
+  function toHex(buf) {
+    var bytes = new Uint8Array(buf);
+    var out = "";
+    for (var i = 0; i < bytes.length; i++) out += (bytes[i] < 16 ? "0" : "") + bytes[i].toString(16);
+    return out;
+  }
+
+  // Promise<string>
+  function topicFor(hid) {
+    var c = root.crypto;
+    if (typeof hid !== "string" || !hid) return Promise.reject(new Error("hid が空です"));
+    if (!c || !c.subtle || typeof c.subtle.digest !== "function" || typeof TextEncoder === "undefined") {
+      return Promise.reject(new Error("この環境ではトピック名を作れません"));
+    }
+    try {
+      return Promise.resolve(c.subtle.digest("SHA-256", new TextEncoder().encode(TOPIC_SALT + hid))).then(function (buf) {
+        return TOPIC_PREFIX + toHex(buf).slice(0, 32);
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  }
+
+  function init(hid) {
+    topicPromise = topicFor(hid).then(function (t) {
+      topic = t;
+      renderTopic();
+      return t;
+    }, function (e) {
+      try { console.warn("[通知] トピック名を作れませんでした", e); } catch (_) { /* ignore */ }
+      return "";
+    });
+    return topicPromise;
+  }
+
+  function getTopic() { return topic; }
+
+  /* ---------------- ON/OFF ---------------- */
+  function isEnabled() {
+    try { return root.localStorage.getItem(ENABLED_KEY) !== "0"; } catch (_) { return true; }
+  }
+  function setEnabled(on) {
+    try { root.localStorage.setItem(ENABLED_KEY, on ? "1" : "0"); } catch (_) { /* この端末では記憶できない */ }
+  }
+
+  /* ---------------- 送信 ---------------- */
+  function pageUrl() {
+    try { return String(root.location.href).split("#")[0]; } catch (_) { return ""; }
+  }
+
+  function post(payload) {
+    if (typeof root.fetch !== "function") return Promise.reject(new Error("fetch が使えません"));
+    var ctrl = typeof AbortController === "function" ? new AbortController() : null;
+    var timer = ctrl ? setTimeout(function () { try { ctrl.abort(); } catch (_) { /* ignore */ } }, TIMEOUT_MS) : null;
+    var init = { method: "POST", body: JSON.stringify(payload) };
+    if (ctrl) init.signal = ctrl.signal;
+    return Promise.resolve(root.fetch(NTFY_URL, init)).then(function (res) {
+      if (timer) clearTimeout(timer);
+      if (!res || !res.ok) throw new Error("ntfy の応答が不正です（" + (res ? res.status : "-") + "）");
+      return true;
+    }, function (e) {
+      if (timer) clearTimeout(timer);
+      throw e;
+    });
+  }
+
+  function send(title, message, tags) {
+    var ready = topicPromise || Promise.resolve(topic);
+    return ready.then(function (t) {
+      if (!t) throw new Error("トピック名がありません");
+      var payload = { topic: t, title: title, message: message, tags: tags };
+      var click = pageUrl();
+      if (/^https?:/.test(click)) payload.click = click;
+      return post(payload);
+    });
+  }
+
+  // app.js から: item が買い物リストに入った（この端末の操作で）
+  function notify(item, reason) {
+    if (!item || !isEnabled()) return Promise.resolve(false);
+    var name = String(item.name || "");
+    var msg = "「" + name + "」が買い物リストに入りました" + (reason ? "（" + String(reason) + "）" : "");
+    return send("買い物リストに追加", msg, ["shopping_cart"]).then(function () {
+      failStreak = 0;
+      failToastShown = false;
+      return true;
+    }, function (e) {
+      failStreak++;
+      try { console.warn("[通知] 送信できませんでした", e); } catch (_) { /* ignore */ }
+      if (failStreak >= FAIL_TOAST_AFTER && !failToastShown) {
+        failToastShown = true;
+        toast("買い物リストの通知を送れませんでした。在庫の変更は保存されています", "info");
+      }
+      return false;
+    });
+  }
+
+  function sendTest() {
+    return send("おうち在庫のテスト通知", "通知の設定ができています。買い物リストに入ったものがここに届きます", ["tada"]);
+  }
+
+  /* ---------------- トースト（app.js の #toast を借りる） ---------------- */
+  function toast(message, type) {
+    var el = document.getElementById("toast");
+    if (!el) return;
+    if (toastTimer) clearTimeout(toastTimer);
+    el.textContent = String(message);
+    el.setAttribute("data-type", type || "info");
+    el.hidden = false;
+    toastTimer = setTimeout(function () { el.hidden = true; toastTimer = null; }, type === "error" ? 5000 : 3500);
+  }
+
+  /* ---------------- 設定 UI ---------------- */
+  function $(id) { return document.getElementById(id); }
+
+  var BELL_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 2a1.6 1.6 0 0 1 1.6 1.6v.6A6.4 6.4 0 0 1 18.4 10.5v3.7l1.8 2.7a1 1 0 0 1-.83 1.55H4.63a1 1 0 0 1-.83-1.55l1.8-2.7v-3.7A6.4 6.4 0 0 1 10.4 4.2v-.6A1.6 1.6 0 0 1 12 2zm-2.6 17.5h5.2a2.6 2.6 0 0 1-5.2 0z"/></svg>';
+
+  function renderTopic() {
+    var input = $("web-notify-topic");
+    if (input) input.value = topic || "（準備中…）";
+    var link = $("web-notify-link");
+    if (link) {
+      if (topic) {
+        link.setAttribute("href", NTFY_URL + topic);
+        link.textContent = NTFY_URL + topic;
+        link.removeAttribute("aria-disabled");
+      } else {
+        link.removeAttribute("href");
+        link.textContent = "（準備中…）";
+        link.setAttribute("aria-disabled", "true");
+      }
+    }
+  }
+
+  function installUI() {
+    if (typeof document === "undefined" || $("web-notify-btn")) return;
+    var side = document.querySelector(".web-header-side");
+    if (!side) return;
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.id = "web-notify-btn";
+    btn.className = "web-pass-btn web-notify-btn";
+    btn.innerHTML = BELL_ICON; // 固定の SVG のみ
+    var label = document.createElement("span");
+    label.textContent = "通知";
+    btn.appendChild(label);
+    btn.setAttribute("aria-haspopup", "dialog");
+    btn.addEventListener("click", openModal);
+    var pass = $("web-change-pass");
+    if (pass) side.insertBefore(btn, pass); else side.appendChild(btn);
+    wireModal();
+  }
+
+  function focusables(container) {
+    return Array.prototype.filter.call(
+      container.querySelectorAll("button, [href], input, select, textarea, [tabindex]:not([tabindex='-1'])"),
+      function (el) { return !el.disabled && !el.hidden && el.offsetParent !== null; });
+  }
+
+  function openModal() {
+    var m = $("web-notify-modal");
+    if (!m) return;
+    modalReturnFocus = document.activeElement;
+    renderTopic();
+    var sw = $("web-notify-enabled");
+    if (sw) sw.checked = isEnabled();
+    m.hidden = false;
+    document.body.classList.add("modal-open");
+    var first = $("web-notify-copy");
+    if (first) first.focus();
+  }
+
+  function closeModal() {
+    var m = $("web-notify-modal");
+    if (!m || m.hidden) return;
+    m.hidden = true;
+    document.body.classList.remove("modal-open");
+    if (modalReturnFocus && typeof modalReturnFocus.focus === "function") modalReturnFocus.focus();
+    modalReturnFocus = null;
+  }
+
+  function selectTopic() {
+    var input = $("web-notify-topic");
+    if (!input) return;
+    try { input.focus(); input.select(); input.setSelectionRange(0, input.value.length); } catch (_) { /* ignore */ }
+  }
+
+  function onCopy() {
+    if (!topic) return;
+    var done = function () { toast("トピック名をコピーしました。ntfy アプリに貼り付けてください", "success"); };
+    var fallback = function () {
+      selectTopic();
+      toast("コピーできなかったので、トピック名を選択しました。長押しでコピーしてください", "info");
+    };
+    try {
+      var cb = root.navigator && root.navigator.clipboard;
+      if (cb && typeof cb.writeText === "function") {
+        Promise.resolve(cb.writeText(topic)).then(done, fallback);
+        return;
+      }
+    } catch (_) { /* fallthrough */ }
+    fallback();
+  }
+
+  function onTest() {
+    var b = $("web-notify-test");
+    if (b) b.disabled = true;
+    sendTest().then(function () {
+      toast("テスト通知を送りました。ntfy アプリに届いたか確認してください", "success");
+    }, function (e) {
+      try { console.warn("[通知] テスト通知を送れませんでした", e); } catch (_) { /* ignore */ }
+      toast("テスト通知を送れませんでした。通信状態を確認して、もう一度お試しください", "error");
+    }).then(function () {
+      if (b) b.disabled = false;
+    });
+  }
+
+  function wireModal() {
+    if (uiWired) return;
+    var m = $("web-notify-modal");
+    if (!m) return;
+    uiWired = true;
+    m.addEventListener("click", function (e) {
+      var t = e.target;
+      if (t && t.closest && t.closest("[data-web-close]")) { e.preventDefault(); closeModal(); }
+    });
+    var copy = $("web-notify-copy");
+    if (copy) copy.addEventListener("click", onCopy);
+    var input = $("web-notify-topic");
+    if (input) input.addEventListener("focus", function () { try { input.select(); } catch (_) { /* ignore */ } });
+    var test = $("web-notify-test");
+    if (test) test.addEventListener("click", onTest);
+    var sw = $("web-notify-enabled");
+    if (sw) {
+      sw.addEventListener("change", function () {
+        setEnabled(sw.checked);
+        toast(sw.checked ? "この端末から通知を送ります" : "この端末からは通知を送りません", "info");
+      });
+    }
+    document.addEventListener("keydown", function (e) {
+      if (m.hidden) return;
+      if (e.key === "Escape" || e.key === "Esc") { e.preventDefault(); closeModal(); return; }
+      if (e.key === "Tab") {
+        var panel = m.querySelector(".modal-panel");
+        var f = focusables(panel);
+        if (!f.length) return;
+        var first = f[0], last = f[f.length - 1], active = document.activeElement;
+        if (!panel.contains(active)) { e.preventDefault(); first.focus(); }
+        else if (e.shiftKey && active === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && active === last) { e.preventDefault(); first.focus(); }
+      }
+    });
+  }
+
+  var StockNotify = {
+    topicFor: topicFor,
+    init: init,
+    getTopic: getTopic,
+    isEnabled: isEnabled,
+    setEnabled: setEnabled,
+    notify: notify,
+    sendTest: sendTest,
+    installUI: installUI
+  };
+
+  root.StockNotify = StockNotify;
+  if (typeof module !== "undefined" && module.exports) module.exports = StockNotify;
+})();
+
+</script>
+<script>
 window.__ouchiBootApp = function () {
   window.__ouchiBootApp = null;
 /*
@@ -2387,7 +3031,12 @@ window.__ouchiBootApp = function () {
   var CATEGORIES = ["食品", "飲料", "調味料", "日用品", "衛生用品", "その他"];
   var UNITS = ["個", "本", "袋", "パック", "箱", "枚", "ロール", "缶", "kg", "g", "L", "ml"];
   var LIMITS = { nameMax: 50, locationMax: 30, noteMax: 200, quantityMax: 99999 };
-  var EDITABLE_FIELDS = ["name", "category", "quantity", "unit", "minQuantity", "location", "note"];
+  var EDITABLE_FIELDS = ["name", "category", "quantity", "unit", "minQuantity", "location", "note", "opened", "openedLevel"];
+  // v3: 開封品の残量。opened が 0 のときは ""
+  var OPENED_LEVELS = ["full", "half", "low", "empty"];
+  // quantity / opened / openedLevel は互いに整合させる（opened <= quantity, opened=0 ⇔ openedLevel=""）ため、
+  // どれか 1 つでも書くときは 3 つまとめて保存する
+  var STOCK_FIELDS = ["quantity", "opened", "openedLevel"];
   var ID_PATTERN = /^[A-Za-z0-9_\-.~:@+]+$/;
   var ID_MAX = 128;
   var DATE_MAX = 64;
@@ -2478,6 +3127,7 @@ window.__ouchiBootApp = function () {
     return {
       id: it.id, name: it.name, category: it.category, quantity: it.quantity, unit: it.unit,
       minQuantity: it.minQuantity, location: it.location, note: it.note,
+      opened: it.opened, openedLevel: it.openedLevel,
       createdAt: it.createdAt, updatedAt: it.updatedAt
     };
   }
@@ -2536,19 +3186,62 @@ window.__ouchiBootApp = function () {
 
     var category = typeof raw.category === "string" && CATEGORIES.indexOf(raw.category) !== -1 ? raw.category : "その他";
     var unit = typeof raw.unit === "string" && UNITS.indexOf(raw.unit) !== -1 ? raw.unit : "個";
+    var quantity = toNum(raw.quantity);
+    var opened = normalizeOpened(quantity, raw.opened, raw.openedLevel);
 
     return {
       id: rid,
       name: name,
       category: category,
-      quantity: toNum(raw.quantity),
+      quantity: quantity,
       unit: unit,
       minQuantity: toNum(raw.minQuantity),
       location: truncateChars(toStr(raw.location).trim(), LIMITS.locationMax),
       note: truncateChars(toStr(raw.note).trim(), LIMITS.noteMax),
+      opened: opened.opened,
+      openedLevel: opened.openedLevel,
       createdAt: typeof raw.createdAt === "string" && raw.createdAt ? truncateChars(raw.createdAt, DATE_MAX) : EPOCH_ISO,
       updatedAt: typeof raw.updatedAt === "string" && raw.updatedAt ? truncateChars(raw.updatedAt, DATE_MAX) : EPOCH_ISO
     };
+  }
+
+  // v3: 開封済みの数と残量を quantity に合わせて整える（旧データ＝フィールド無しは 0 / ""）
+  function normalizeOpened(quantity, rawOpened, rawLevel) {
+    var opened = clamp(toNum(rawOpened), 0, quantity);
+    var level = "";
+    if (opened > 0) level = typeof rawLevel === "string" && OPENED_LEVELS.indexOf(rawLevel) !== -1 ? rawLevel : "full";
+    return { opened: opened, openedLevel: level };
+  }
+
+  /*
+   * 数量の増減（純粋関数。adjustQuantity がキュー内の最新値に対して使う）
+   * - 加算（購入済み・＋）: 未開封として加算。opened は変えない
+   * - 減算（−＝使い切った）: 開封品から先に使い切ったとみなし opened も同じだけ減らす。
+   *   開封品がまだ残るなら、その残量は分からないので "full" に戻す。0 になったら ""
+   * - 常に 0 <= opened <= quantity にクランプ
+   */
+  function applyQuantityDelta(item, delta) {
+    var src = item || {};
+    var q = toNum(src.quantity);
+    var cur = normalizeOpened(q, src.opened, src.openedLevel);
+    var newQ = clamp(round2(q + delta), 0, LIMITS.quantityMax);
+    var opened = cur.opened;
+    var level = cur.openedLevel;
+    if (delta < 0 && opened > 0) {
+      opened = Math.max(0, round2(opened + delta));
+      level = "full";
+    }
+    var next = normalizeOpened(newQ, opened, level);
+    return { quantity: newQ, opened: next.opened, openedLevel: next.openedLevel };
+  }
+
+  // 未開封から 1 つ開封する（純粋関数）。未開封が 1 未満なら null
+  function applyOpenOne(item) {
+    var src = item || {};
+    var q = toNum(src.quantity);
+    var cur = normalizeOpened(q, src.opened, src.openedLevel);
+    if (round2(q - cur.opened) < 1) return null;
+    return { quantity: q, opened: round2(cur.opened + 1), openedLevel: cur.openedLevel || "full" };
   }
 
   function randomBase36(len) {
@@ -2811,6 +3504,12 @@ window.__ouchiBootApp = function () {
     if (mode === "shared") {
       var fields = { updatedAt: updatedAt };
       for (var k in picked) if (hasOwn(picked, k)) fields[k] = merged[k];
+      for (var s = 0; s < STOCK_FIELDS.length; s++) {
+        if (hasOwn(picked, STOCK_FIELDS[s])) {
+          for (var t = 0; t < STOCK_FIELDS.length; t++) fields[STOCK_FIELDS[t]] = merged[STOCK_FIELDS[t]];
+          break;
+        }
+      }
       return sharedUpdate(id, fields).then(function () {
         // スナップショットで既に消えていたら書き戻さない
         if (findIndex(id) !== -1) {
@@ -2991,9 +3690,21 @@ window.__ouchiBootApp = function () {
       // 実行時点の最新キャッシュ値から計算する
       var idx = findIndex(id);
       if (idx === -1) throw makeError("not_found");
-      var q = cache[idx].quantity;
-      var newQ = clamp(round2(q + delta), 0, LIMITS.quantityMax);
-      return doUpdate(id, { quantity: newQ });
+      return doUpdate(id, applyQuantityDelta(cache[idx], delta));
+    }).catch(function (e) { throw normalizeError(e); });
+  }
+
+  // v3: 未開封から 1 つ開封する（opened+1、残量が未設定なら "full"）。未開封が無ければ invalid_argument
+  function openItem(id) {
+    var notReady = ensureReady();
+    if (notReady) return notReady;
+    if (typeof id !== "string" || findIndex(id) === -1) return Promise.reject(makeError("not_found"));
+    return enqueue(id, function () {
+      var idx = findIndex(id);
+      if (idx === -1) throw makeError("not_found");
+      var patch = applyOpenOne(cache[idx]);
+      if (!patch) throw makeError("invalid_argument", "未開封の在庫がありません");
+      return doUpdate(id, patch);
     }).catch(function (e) { throw normalizeError(e); });
   }
 
@@ -3038,7 +3749,11 @@ window.__ouchiBootApp = function () {
     addItem: addItem,
     updateItem: updateItem,
     adjustQuantity: adjustQuantity,
+    openItem: openItem,
     deleteItem: deleteItem,
+    applyQuantityDelta: applyQuantityDelta,
+    applyOpenOne: applyOpenOne,
+    OPENED_LEVELS: OPENED_LEVELS.slice(),
     toMessage: toMessage,
     sanitizeItem: sanitizeItem,
     generateId: generateId
@@ -3066,6 +3781,16 @@ window.__ouchiBootApp = function () {
   var UNITS = Object.freeze(["個", "本", "袋", "パック", "箱", "枚", "ロール", "缶", "kg", "g", "L", "ml"]);
   var STATUS_LABELS = Object.freeze({ ok: "在庫あり", low: "残りわずか", out: "在庫切れ" });
   var LIMITS = Object.freeze({ nameMax: 50, locationMax: 30, noteMax: 200, quantityMax: 99999 });
+  // v3: 開封品の残量
+  var OPENED_LEVELS = Object.freeze(["full", "half", "low", "empty"]);
+  var OPENED_LEVEL_LABELS = Object.freeze({ full: "たっぷり", half: "半分", low: "少なめ", empty: "ほぼ空" });
+  var LOW_OPENED_LEVELS = Object.freeze(["low", "empty"]);
+  // v3: 買い物リストに入った理由（優先順: 在庫切れ → 最低在庫数より少ない → 開封品が残りわずか）
+  var PURCHASE_REASONS = Object.freeze({
+    out: "在庫切れ",
+    below_min: "最低在庫数より少ない",
+    opened_low: "開封品が残りわずか・予備なし"
+  });
 
   var QTY_PATTERN = /^-?\d+(\.\d+)?$/;
 
@@ -3114,18 +3839,50 @@ window.__ouchiBootApp = function () {
     return Math.round(n * 100) / 100;
   }
 
-  function getStatus(item) {
+  // v3: 開封状態の読み取り（旧データ＝フィールド無しは opened=0, openedLevel=""）。
+  // opened は 0..quantity にクランプ。sealed = 未開封の数
+  function getOpenInfo(item) {
+    var q = Math.max(0, num(item && item.quantity));
+    var opened = roundQty(Math.min(q, Math.max(0, num(item && item.opened))));
+    var level = "";
+    if (opened > 0) {
+      var raw = item && item.openedLevel;
+      level = OPENED_LEVELS.indexOf(raw) !== -1 ? raw : "full";
+    }
+    return { quantity: q, opened: opened, sealed: roundQty(q - opened), openedLevel: level };
+  }
+
+  // 開封品が少なめ/ほぼ空で、未開封の予備が無い
+  function isOpenedLow(item) {
+    var o = getOpenInfo(item);
+    return o.opened > 0 && LOW_OPENED_LEVELS.indexOf(o.openedLevel) !== -1 && o.sealed <= 0;
+  }
+
+  // 戻り値: "out" | "below_min" | "opened_low" | null（買い物対象でない）
+  function getPurchaseReasonCode(item) {
     var q = num(item && item.quantity);
-    var min = num(item && item.minQuantity);
     if (q <= 0) return "out";
-    if (q < min) return "low";
+    if (q < num(item && item.minQuantity)) return "below_min";
+    if (isOpenedLow(item)) return "opened_low";
+    return null;
+  }
+
+  // 戻り値: 理由の表示文言（「在庫切れ」等）。買い物対象でなければ ""
+  function getPurchaseReason(item) {
+    var code = getPurchaseReasonCode(item);
+    return code ? PURCHASE_REASONS[code] : "";
+  }
+
+  function getStatus(item) {
+    var code = getPurchaseReasonCode(item);
+    if (code === "out") return "out";
+    if (code) return "low"; // 最低在庫数より少ない・開封品が残りわずか
     return "ok";
   }
 
   function needsPurchase(item) {
-    // 最低在庫数より少ない（未満）、または在庫切れ（0）のとき買い物リストに入れる
-    var q = num(item && item.quantity);
-    return q <= 0 || q < num(item && item.minQuantity);
+    // 在庫切れ（0）・最低在庫数より少ない（未満）・開封品が少なめ/ほぼ空で予備なし のとき買い物リストに入れる
+    return getPurchaseReasonCode(item) !== null;
   }
 
   function categoryIndex(cat) {
@@ -3232,6 +3989,18 @@ window.__ouchiBootApp = function () {
     var note = toTrimmedString(src.note);
     if (charLength(note) > LIMITS.noteMax) errors.note = "メモは" + LIMITS.noteMax + "文字以内で入力してください";
 
+    // v3: 開封済みの数（空=0、数量以下）と開封品の残量（opened>0 のときのみ必要。未指定は "full"）
+    var opened = checkNumber(src.opened, "開封済みの数", true);
+    if (opened.error) errors.opened = opened.error;
+    else if (qty.value !== null && opened.value > qty.value) errors.opened = "開封済みの数は数量以下にしてください";
+    var openedLevel = "";
+    if (!opened.error && opened.value > 0) {
+      var lv = toTrimmedString(src.openedLevel);
+      if (lv === "") openedLevel = "full";
+      else if (OPENED_LEVELS.indexOf(lv) === -1) errors.openedLevel = "開封品の残量を選択してください";
+      else openedLevel = lv;
+    }
+
     var ok = Object.keys(errors).length === 0;
     return {
       ok: ok,
@@ -3244,7 +4013,9 @@ window.__ouchiBootApp = function () {
             unit: unit,
             minQuantity: min.value,
             location: location,
-            note: note
+            note: note,
+            opened: opened.value,
+            openedLevel: openedLevel
           }
         : null
     };
@@ -3264,6 +4035,8 @@ window.__ouchiBootApp = function () {
   }
 
   function suggestPurchaseQuantity(item) {
+    // v3: 開封品が残りわずか（予備なし）だけが理由なら、予備を 1 つ
+    if (getPurchaseReasonCode(item) === "opened_low") return 1;
     var q = num(item && item.quantity);
     var min = num(item && item.minQuantity);
     // 最低在庫数まで戻すのに必要な数（最低1）
@@ -3316,6 +4089,13 @@ window.__ouchiBootApp = function () {
     UNITS: UNITS,
     STATUS_LABELS: STATUS_LABELS,
     LIMITS: LIMITS,
+    OPENED_LEVELS: OPENED_LEVELS,
+    OPENED_LEVEL_LABELS: OPENED_LEVEL_LABELS,
+    PURCHASE_REASONS: PURCHASE_REASONS,
+    getOpenInfo: getOpenInfo,
+    isOpenedLow: isOpenedLow,
+    getPurchaseReasonCode: getPurchaseReasonCode,
+    getPurchaseReason: getPurchaseReason,
     normalizeName: normalizeName,
     findDuplicate: findDuplicate,
     parseQuantity: parseQuantity,
@@ -3346,7 +4126,7 @@ window.__ouchiBootApp = function () {
 
   var TAB_KEY = "stockapp.ui.tab";
   var TABS = ["inventory", "shopping", "register"];
-  var FIELDS = ["name", "category", "quantity", "unit", "minQuantity", "location", "note"];
+  var FIELDS = ["name", "category", "quantity", "unit", "minQuantity", "location", "note", "opened", "openedLevel"];
   var FIELD_SLUG = {
     name: "name",
     category: "category",
@@ -3354,7 +4134,9 @@ window.__ouchiBootApp = function () {
     unit: "unit",
     minQuantity: "min-quantity",
     location: "location",
-    note: "note"
+    note: "note",
+    opened: "opened",
+    openedLevel: "opened-level"
   };
   var REGISTER_DEFAULTS = {
     name: "",
@@ -3363,7 +4145,9 @@ window.__ouchiBootApp = function () {
     unit: "個",
     minQuantity: "0",
     location: "",
-    note: ""
+    note: "",
+    opened: "0",
+    openedLevel: "full"
   };
   var SYNC_INFO = {
     connecting: { text: "接続中…", title: "データに接続しています" },
@@ -3429,6 +4213,45 @@ window.__ouchiBootApp = function () {
     if (className) el.className = className;
     if (text !== undefined && text !== null) el.textContent = String(text);
     return el;
+  }
+
+  // ---------------------------------------------------------------------
+  // v3: 買い物リスト入りの通知（この端末の書き込みで「対象外→対象」になったときだけ 1 回）
+  //   通知の実体は Web版の window.StockNotify（src/web/notify.js）。Artifact版では未定義で何もしない。
+  //   他端末の変更を受信した側は送らない（二重通知防止）。
+  // ---------------------------------------------------------------------
+  var notifySent = Object.create(null); // id -> true（対象のあいだ再送しない。対象外に戻ったら消す）
+
+  function maybeNotify(before, after) {
+    if (!after || typeof after !== "object" || !after.id) return;
+    if (before && needsPurchase(before)) return;
+    if (!needsPurchase(after)) return;
+    if (notifySent[after.id]) return;
+    notifySent[after.id] = true;
+    try {
+      var N = window.StockNotify;
+      if (N && typeof N.notify === "function") {
+        var r = N.notify(Object.assign({}, after), getPurchaseReason(after));
+        if (r && typeof r.catch === "function") r.catch(function () {});
+      }
+    } catch (e) {
+      /* 通知の失敗は在庫操作に影響させない */
+    }
+  }
+
+  // 書き込み Promise（解決値 = 書き込み後の Item）を通知判定付きにする。before は操作前の Item（新規は null）
+  function tracked(before, p) {
+    return p.then(function (after) {
+      maybeNotify(before, after);
+      return after;
+    });
+  }
+
+  function pruneNotifySent() {
+    Object.keys(notifySent).forEach(function (id) {
+      var it = findItem(id);
+      if (!it || !needsPurchase(it)) delete notifySent[id];
+    });
   }
 
   // ---------------------------------------------------------------------
@@ -3658,7 +4481,67 @@ window.__ouchiBootApp = function () {
     actions.appendChild(del);
 
     li.appendChild(actions);
+
+    // v3: 開封品の表示・操作は ± の下に置く（表示/非表示が切り替わっても ± ボタンの位置が動かず、連打を取りこぼさない）
+    var openBlock = buildOpenBlock(item);
+    if (openBlock) li.appendChild(openBlock);
     return li;
+  }
+
+  // v3: 開封状態（「3本（未開封2・開封1）」・残量メーター・残量チップ・「開封する」）
+  function buildOpenBlock(item) {
+    var o = getOpenInfo(item);
+    var canOpen = o.sealed >= 1;
+    if (o.opened <= 0 && !canOpen) return null;
+
+    var box = makeEl("div", "item-open");
+    box.setAttribute("data-opened", o.opened > 0 ? "true" : "false");
+    var row = makeEl("div", "item-open-row");
+    if (o.opened > 0) {
+      row.appendChild(
+        makeEl(
+          "span",
+          "open-summary",
+          formatQuantity(o.quantity, item.unit) + "（未開封" + formatQuantity(o.sealed, "") + "・開封" + formatQuantity(o.opened, "") + "）"
+        )
+      );
+    } else {
+      row.appendChild(makeEl("span", "open-summary open-summary--sealed", "すべて未開封"));
+    }
+    if (canOpen) {
+      var openBtn = makeEl("button", "btn-open", "開封する");
+      openBtn.type = "button";
+      openBtn.setAttribute("data-action", "open");
+      openBtn.setAttribute("aria-label", item.name + "を1つ開封する");
+      row.appendChild(openBtn);
+    }
+    box.appendChild(row);
+
+    if (o.opened > 0) {
+      var level = o.openedLevel;
+      var gauge = makeEl("div", "open-gauge");
+      var meter = makeEl("span", "level-meter");
+      meter.setAttribute("data-level", level);
+      meter.setAttribute("aria-hidden", "true");
+      for (var i = 0; i < 4; i++) meter.appendChild(makeEl("span", "level-meter-seg"));
+      gauge.appendChild(meter);
+      gauge.appendChild(makeEl("span", "level-text", "開封品の残量：" + OPENED_LEVEL_LABELS[level]));
+      box.appendChild(gauge);
+
+      var chips = makeEl("div", "level-chips");
+      chips.setAttribute("role", "group");
+      chips.setAttribute("aria-label", item.name + "の開封品の残量");
+      OPENED_LEVELS.forEach(function (lv) {
+        var chip = makeEl("button", "level-chip", OPENED_LEVEL_LABELS[lv]);
+        chip.type = "button";
+        chip.setAttribute("data-action", "level");
+        chip.setAttribute("data-level", lv);
+        chip.setAttribute("aria-pressed", lv === level ? "true" : "false");
+        chips.appendChild(chip);
+      });
+      box.appendChild(chips);
+    }
+    return box;
   }
 
   function buildShoppingCard(item) {
@@ -3673,14 +4556,16 @@ window.__ouchiBootApp = function () {
     head.appendChild(makeEl("span", "badge badge--" + status, STATUS_LABELS[status]));
     main.appendChild(head);
 
+    var reasonCode = getPurchaseReasonCode(item);
+    var reason = makeEl("p", "shop-reason", getPurchaseReason(item));
+    reason.setAttribute("data-reason", reasonCode || "");
+    main.appendChild(reason);
+
     var meta = makeEl("div", "item-meta");
-    meta.appendChild(
-      makeEl(
-        "span",
-        "shop-detail",
-        "残り " + formatQuantity(item.quantity, item.unit) + " / 最低 " + formatQuantity(item.minQuantity, item.unit)
-      )
-    );
+    var o = getOpenInfo(item);
+    var detail = "残り " + formatQuantity(item.quantity, item.unit) + " / 最低 " + formatQuantity(item.minQuantity, item.unit);
+    if (o.opened > 0) detail += "（開封品 " + OPENED_LEVEL_LABELS[o.openedLevel] + "）";
+    meta.appendChild(makeEl("span", "shop-detail", detail));
     meta.appendChild(makeEl("span", "item-category", item.category));
     if (item.location) meta.appendChild(makeEl("span", "item-location", item.location));
     main.appendChild(meta);
@@ -3703,16 +4588,17 @@ window.__ouchiBootApp = function () {
     var li = a.closest ? a.closest("li[data-id]") : null;
     var list = li && li.parentNode;
     if (!li || !list || !list.id) return null;
-    return { listId: list.id, id: li.getAttribute("data-id"), action: action };
+    return { listId: list.id, id: li.getAttribute("data-id"), action: action, level: a.getAttribute("data-level") };
   }
 
-  function findListButton(listId, id, action) {
+  function findListButton(listId, id, action, level) {
     var list = $(listId);
     if (!list) return null;
     var children = list.children;
     for (var i = 0; i < children.length; i++) {
       if (children[i].getAttribute("data-id") === id) {
-        return children[i].querySelector('[data-action="' + action + '"]');
+        var sel = '[data-action="' + action + '"]' + (level ? '[data-level="' + level + '"]' : "");
+        return children[i].querySelector(sel);
       }
     }
     return null;
@@ -3721,9 +4607,13 @@ window.__ouchiBootApp = function () {
   function restoreListFocus(saved) {
     if (!saved) return;
     if (document.activeElement && document.activeElement !== document.body) return;
-    var btn = findListButton(saved.listId, saved.id, saved.action);
+    var btn = findListButton(saved.listId, saved.id, saved.action, saved.level);
     if (btn && btn.disabled && saved.action === "dec") {
       btn = findListButton(saved.listId, saved.id, "inc");
+    }
+    if (!btn && saved.action === "open") {
+      // 最後の未開封を開封すると「開封する」が消える → 残量チップへ
+      btn = findListButton(saved.listId, saved.id, "level");
     }
     if (btn && !btn.disabled) btn.focus();
   }
@@ -4033,7 +4923,7 @@ window.__ouchiBootApp = function () {
     setRegisterBusy(true);
     var p;
     try {
-      p = Promise.resolve(s.addItem(value));
+      p = tracked(null, Promise.resolve(s.addItem(value)));
     } catch (e) {
       p = Promise.reject(e);
     }
@@ -4105,7 +4995,7 @@ window.__ouchiBootApp = function () {
     setRegisterBusy(true);
     var p;
     try {
-      p = Promise.resolve(s.adjustQuantity(dup.id, qty));
+      p = tracked(findItem(dup.id), Promise.resolve(s.adjustQuantity(dup.id, qty)));
     } catch (err) {
       p = Promise.reject(err);
     }
@@ -4164,20 +5054,40 @@ window.__ouchiBootApp = function () {
   // ---------------------------------------------------------------------
   // 在庫一覧・フィルタ・数量±（F3 / F4）
   // ---------------------------------------------------------------------
-  function adjust(id, delta) {
+  // 在庫カード上の書き込み（± / 開封 / 残量）共通。成功時は subscribe で再描画（トーストなし）
+  function cardWrite(id, call) {
     var s = store();
     if (!s) {
       showToast(DEFAULT_ERROR, "error");
       return;
     }
+    var before = findItem(id);
     var p;
     try {
-      p = Promise.resolve(s.adjustQuantity(id, delta));
+      p = tracked(before, Promise.resolve(call(s)));
     } catch (e) {
       p = Promise.reject(e);
     }
     p.catch(function (err) {
       showToast(errorMessage(err), "error");
+    });
+  }
+
+  function adjust(id, delta) {
+    cardWrite(id, function (s) {
+      return s.adjustQuantity(id, delta);
+    });
+  }
+
+  function openOne(id) {
+    cardWrite(id, function (s) {
+      return s.openItem(id);
+    });
+  }
+
+  function setOpenedLevel(id, level) {
+    cardWrite(id, function (s) {
+      return s.updateItem(id, { openedLevel: level });
     });
   }
 
@@ -4197,6 +5107,14 @@ window.__ouchiBootApp = function () {
       case "dec":
         if (num(item.quantity) > 0) adjust(id, -1);
         break;
+      case "open":
+        if (getOpenInfo(item).sealed >= 1) openOne(id);
+        break;
+      case "level": {
+        var lv = btn.getAttribute("data-level");
+        if (OPENED_LEVELS.indexOf(lv) !== -1 && lv !== getOpenInfo(item).openedLevel) setOpenedLevel(id, lv);
+        break;
+      }
       case "edit":
         openEdit(id, btn);
         break;
@@ -4256,7 +5174,9 @@ window.__ouchiBootApp = function () {
       unit: item.unit,
       minQuantity: String(roundQty(num(item.minQuantity))),
       location: item.location || "",
-      note: item.note || ""
+      note: item.note || "",
+      opened: String(getOpenInfo(item).opened),
+      openedLevel: getOpenInfo(item).openedLevel || "full"
     });
     showFormErrors("edit", {});
     var save = $("edit-save");
@@ -4290,7 +5210,7 @@ window.__ouchiBootApp = function () {
     if (save) save.disabled = true;
     var p;
     try {
-      p = Promise.resolve(s.updateItem(id, value));
+      p = tracked(findItem(id), Promise.resolve(s.updateItem(id, value)));
     } catch (err) {
       p = Promise.reject(err);
     }
@@ -4377,7 +5297,7 @@ window.__ouchiBootApp = function () {
     if (btn) btn.disabled = true;
     var p;
     try {
-      p = Promise.resolve(s.adjustQuantity(item.id, n));
+      p = tracked(item, Promise.resolve(s.adjustQuantity(item.id, n)));
     } catch (err) {
       p = Promise.reject(err);
     }
@@ -4516,6 +5436,7 @@ window.__ouchiBootApp = function () {
           if (typeof s.subscribe === "function") {
             s.subscribe(function (items) {
               state.items = Array.isArray(items) ? items.filter(Boolean) : [];
+              pruneNotifySent();
               renderAll();
             });
           } else {
@@ -4719,6 +5640,10 @@ window.__ouchiBootApp = function () {
     OF().installClaudeShim(db);
     window.STOCK_APP_TEXT = APP_TEXT;
     installHeaderButton();
+    // v3: 買い物リストの通知（ntfy）。トピック名は hid から作る
+    if (window.StockNotify) {
+      try { window.StockNotify.init(hid); window.StockNotify.installUI(); } catch (_) { /* 通知が使えなくてもアプリは動かす */ }
+    }
     if (typeof window.__ouchiBootApp === "function") {
       booted = true;
       window.__ouchiBootApp();
